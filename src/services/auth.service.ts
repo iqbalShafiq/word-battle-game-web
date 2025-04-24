@@ -1,4 +1,4 @@
-import api from './axios-interceptor';
+import api from './axios';
 import type { ApiResponse, LoginData } from '../types';
 
 export async function login(email: string, password: string) {
