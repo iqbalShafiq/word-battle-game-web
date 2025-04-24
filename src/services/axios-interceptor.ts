@@ -1,5 +1,6 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import api from './axios';
+import { refreshToken } from './auth.service';
 
 let isRefreshing = false;
 let failedQueue: {
@@ -35,7 +36,7 @@ api.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        await api.post('v1/auth/refresh');
+        await refreshToken();
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {

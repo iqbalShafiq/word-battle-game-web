@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import api from '../services/axios-interceptor';
-import type { ApiResponse, LoginData } from '../types';
+import { login as loginApi } from '../services/auth.service';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post<ApiResponse<LoginData>>('/v1/auth/login', { email, password });
+      const res = await loginApi(email, password);
       if (res.data.code === 200 && res.data.data) {
         localStorage.setItem('player', JSON.stringify(res.data.data.player));
         navigate('/');
