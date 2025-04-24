@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import api from '../services/axios';
+import api from '../services/axios-interceptor';
 import type { ApiResponse, LoginData } from '../types';
 
 export default function LoginPage() {
@@ -15,9 +15,8 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
     try {
-      const res = await api.post<ApiResponse<LoginData>>('/login', { email, password });
+      const res = await api.post<ApiResponse<LoginData>>('/v1/auth/login', { email, password });
       if (res.data.code === 200 && res.data.data) {
         localStorage.setItem('player', JSON.stringify(res.data.data.player));
         navigate('/');
@@ -43,14 +42,20 @@ export default function LoginPage() {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) setError('');
+          }}
           required
         />
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (error) setError('');
+          }}
           required
         />
         <Button type="submit" disabled={loading}>
