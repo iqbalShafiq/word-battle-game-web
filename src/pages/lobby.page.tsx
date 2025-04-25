@@ -38,12 +38,12 @@ export default function LobbyPage() {
           </Button>
         </div>
         {/* Deskripsi dan tombol mulai */}
-        <h1 className="text-3xl font-bold text-accent mb-2 animate-bounce">Word Battle Game</h1>
+        <h1 className="text-3xl font-bold text-accent my-2 animate-bounce">Word Battle Game</h1>
         <p className="text-base text-accent/80 mb-3 text-center font-normal max-w-xs">
           Adu cepat menebak kata dengan pemain lain. Siap jadi yang tercepat?
         </p>
         <Button
-          className="w-56 py-3 text-lg mb-2 shadow-lg bg-yellow-400 hover:bg-yellow-500 text-accent"
+          className="w-48 py-3 text-md my-2 shadow-lg bg-yellow-400 hover:bg-yellow-500 text-accent"
           onClick={handleStart}
         >
           Classic Match
