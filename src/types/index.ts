@@ -58,3 +58,11 @@ export interface LoginData {
   };
   refreshToken: string;
 }
+
+// Register data type
+export interface RegisterData {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+}
