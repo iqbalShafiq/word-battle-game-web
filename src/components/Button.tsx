@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 /**
  * Button component for consistent button styling and behavior.
@@ -13,7 +14,10 @@ const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
 }) => {
   return (
     <button
-      className={`bg-button cursor-pointer text-secondary rounded-md px-4 py-2 font-bold text-base whitespace-nowrap transition-colors disabled:bg-disabled disabled:text-textdisabled hover:bg-buttonhover ${className}`}
+      className={classNames(
+        'bg-button cursor-pointer text-secondary rounded-md px-4 py-2 font-bold text-base whitespace-nowrap transition-colors disabled:bg-disabled disabled:text-textdisabled hover:bg-buttonhover',
+        className
+      )}
       {...rest}
     >
       {children}
