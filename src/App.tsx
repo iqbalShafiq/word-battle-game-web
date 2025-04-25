@@ -4,6 +4,7 @@ import RegisterPage from './pages/register.page';
 import WordBattlePage from './pages/word-battle.page';
 import LobbyPage from './pages/lobby.page';
 import WaitingRoomPage from './pages/waiting-room.page';
+import ForgotPasswordPage from './pages/forgot-password.page';
 import { Toaster } from './components/ui/sonner';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/waiting-room" element={<WaitingRoomPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/" element={<WordBattlePage />} />
       </Routes>
     </BrowserRouter>
