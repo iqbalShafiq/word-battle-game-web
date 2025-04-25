@@ -19,7 +19,7 @@ export default function RegisterPage() {
     <div className="flex justify-center items-center min-h-screen bg-primary">
       <form
         onSubmit={handleSubmit}
-        className="bg-secondary p-8 rounded-lg shadow-md w-full max-w-sm flex flex-col gap-4"
+        className="bg-white/5 rounded-xl px-8 py-6 shadow w-full max-w-sm flex flex-col gap-4"
       >
         <h2 className="text-2xl font-bold text-accent mb-2 text-center">Register</h2>
         <Input
