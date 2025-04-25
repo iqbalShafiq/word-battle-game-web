@@ -3,13 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { login as loginApi } from '../services/auth.service';
+import { useToastStore } from '../store/toast.store';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { toastMessage, clearToast } = useToastStore();
   const navigate = useNavigate();
+
+  if (toastMessage) {
+    toast.success(toastMessage);
+    clearToast();
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

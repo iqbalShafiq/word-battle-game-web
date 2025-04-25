@@ -3,6 +3,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as registerApi } from '../services/auth.service';
+import { useToastStore } from '../store/toast.store';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -11,6 +12,7 @@ export default function RegisterPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const setToast = useToastStore((state) => state.setToast);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,6 +26,7 @@ export default function RegisterPage() {
     try {
       const res = await registerApi(name, email, password);
       if (res.data.code === 201 && res.data.data) {
+        setToast('Register berhasil! Silakan login!');
         navigate('/login');
       } else {
         setError(res.data.message || 'Register failed!');

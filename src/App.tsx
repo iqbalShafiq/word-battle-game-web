@@ -4,10 +4,12 @@ import RegisterPage from './pages/register.page';
 import WordBattlePage from './pages/word-battle.page';
 import LobbyPage from './pages/lobby.page';
 import WaitingRoomPage from './pages/waiting-room.page';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster richColors />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
