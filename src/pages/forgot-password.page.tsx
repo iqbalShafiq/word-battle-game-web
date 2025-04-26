@@ -47,15 +47,15 @@ export default function ForgotPasswordPage() {
           }}
           required
         />
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Sending...' : 'Send Reset Link'}
-        </Button>
-        <div className="text-center mt-2 text-textmuted">
-          Remember your password?{' '}
-          <Link to="/login" className="text-accent hover:underline">
+        <div className="flex items-center w-full gap-1 justify-end -mt-1">
+          <span className='text-textmuted text-xs'>Already remember your password?</span>
+          <Link to="/login" className="text-accent/70 hover:underline text-xs">
             Login
           </Link>
         </div>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Sending...' : 'Send Reset Link'}
+        </Button>
       </form>
     </div>
   );
