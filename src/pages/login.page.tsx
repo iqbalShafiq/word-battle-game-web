@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../components/button';
-import Input from '../components/input';
+import Button from '../components/Button';
+import Input from '../components/Input';
 import { login as loginApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
@@ -11,6 +11,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const { toastMessage, clearToast } = useToastStore();
   const navigate = useNavigate();
 
@@ -19,8 +21,27 @@ export default function LoginPage() {
     clearToast();
   }
 
+  if (toastMessage) {
+    toast.success(toastMessage);
+    clearToast();
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let hasError = false;
+    if (!email) {
+      setEmailError('Email is required');
+      hasError = true;
+    } else {
+      setEmailError('');
+    }
+    if (!password) {
+      setPasswordError('Password is required');
+      hasError = true;
+    } else {
+      setPasswordError('');
+    }
+    if (hasError) return;
     setLoading(true);
     try {
       const res = await loginApi(email, password);
@@ -52,8 +73,9 @@ export default function LoginPage() {
           onChange={(e) => {
             setEmail(e.target.value);
             if (error) setError('');
+            if (emailError) setEmailError('');
           }}
-          required
+          error={emailError}
         />
         <Input
           type="password"
@@ -62,8 +84,9 @@ export default function LoginPage() {
           onChange={(e) => {
             setPassword(e.target.value);
             if (error) setError('');
+            if (passwordError) setPasswordError('');
           }}
-          required
+          error={passwordError}
         />
         <div className="text-right -mb-2 -mt-3">
           <Link to="/forgot-password" className="text-accent/70 hover:underline text-xs">

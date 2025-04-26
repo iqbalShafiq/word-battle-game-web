@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/button';
+import Button from '../components/Button';
 import { useState } from 'react';
 
 export default function WaitingRoomPage() {

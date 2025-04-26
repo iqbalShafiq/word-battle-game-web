@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Button from '../components/button';
-import Input from '../components/input';
+import Button from '../components/Button';
+import Input from '../components/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as registerApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
@@ -12,15 +12,38 @@ export default function RegisterPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [nameError, setNameError] = useState('');
   const setToast = useToastStore((state) => state.setToast);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== passwordConfirmation) {
-      setError('Password confirmation does not match');
-      return;
+    let hasError = false;
+    if (!name) {
+      setNameError('Name is required');
+      hasError = true;
+    } else {
+      setNameError('');
     }
+    if (!email) {
+      setEmailError('Email is required');
+      hasError = true;
+    } else {
+      setEmailError('');
+    }
+    if (!password) {
+      setPasswordError('Password is required');
+      hasError = true;
+    } else {
+      setPasswordError('');
+    }
+    if (password !== passwordConfirmation) {
+      setPasswordError('Password confirmation does not match');
+      hasError = true;
+    }
+    if (hasError) return;
     setLoading(true);
     setError('');
     try {
@@ -50,29 +73,40 @@ export default function RegisterPage() {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+          onChange={(e) => {
+            setName(e.target.value);
+            if (nameError) setNameError('');
+            if (error) setError('');
+          }}
+          error={nameError}
         />
         <Input
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (emailError) setEmailError('');
+            if (error) setError('');
+          }}
+          error={emailError}
         />
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (passwordError) setPasswordError('');
+            if (error) setError('');
+          }}
+          error={passwordError}
         />
         <Input
           type="password"
           placeholder="Password Confirmation"
           value={passwordConfirmation}
           onChange={(e) => setPasswordConfirmation(e.target.value)}
-          required
         />
         <Button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'}
