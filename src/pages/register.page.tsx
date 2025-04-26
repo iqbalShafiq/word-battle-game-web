@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Button from '../components/Button';
-import Input from '../components/Input';
+import Button from '../components/button';
+import Input from '../components/input';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as registerApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import AnimatedCollapse from '../components/AnimatedCollapse';
+import Button from '../components/button';
+import AnimatedCollapse from '../components/animated-collapse';
 
 export default function LobbyPage() {
   const navigate = useNavigate();

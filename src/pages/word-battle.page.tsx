@@ -1,8 +1,8 @@
-import GuessForm from '../components/GuessForm';
-import GuessHistory from '../components/GuessHistory';
-import Players from '../components/Players';
-import RandomWord from '../components/RandomWord';
-import RoomChat from '../components/RoomChat';
+import GuessForm from '../components/guess-form';
+import GuessHistory from '../components/guess-history';
+import Players from '../components/players';
+import RandomWord from '../components/random-word';
+import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
 import { useGameState } from '../hooks/useGameState';
 

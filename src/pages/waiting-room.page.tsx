@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
+import Button from '../components/button';
 import { useState } from 'react';
 
 export default function WaitingRoomPage() {
@@ -21,17 +21,30 @@ export default function WaitingRoomPage() {
         {/* Avatar dan slot lawan */}
         <div className="flex items-center gap-6 my-6">
           <div className="flex flex-col items-center">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=You" alt="You" className="w-14 h-14 rounded-full border-2 border-accent" />
+            <img
+              src="https://api.dicebear.com/7.x/thumbs/svg?seed=You"
+              alt="You"
+              className="w-14 h-14 rounded-full border-2 border-accent"
+            />
             <span className="text-accent text-xs mt-1">You</span>
           </div>
-          <svg className="w-8 h-8 text-accent animate-pulse" fill="none" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" stroke="#ffc857" strokeWidth="3" opacity="0.5"/><path d="M16 8v8l6 3" stroke="#ffc857" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          <svg className="w-8 h-8 text-accent animate-pulse" fill="none" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="14" stroke="#ffc857" strokeWidth="3" opacity="0.5" />
+            <path d="M16 8v8l6 3" stroke="#ffc857" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
           <div className="flex flex-col items-center opacity-60">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Waiting" alt="Waiting" className="w-14 h-14 rounded-full border-2 border-accent/40" />
+            <img
+              src="https://api.dicebear.com/7.x/thumbs/svg?seed=Waiting"
+              alt="Waiting"
+              className="w-14 h-14 rounded-full border-2 border-accent/40"
+            />
             <span className="text-accent/60 text-xs mt-1">Waiting...</span>
           </div>
         </div>
         {/* Pesan dan spinner */}
-        <div className="text-md font-semibold text-textmuted mb-2 text-center">Menunggu pemain lain untuk matchmaking...</div>
+        <div className="text-md font-semibold text-textmuted mb-2 text-center">
+          Menunggu pemain lain untuk matchmaking...
+        </div>
         <div className="flex flex-col items-center w-full">
           {/* Spinner dan progress bar */}
           <div className="relative flex flex-col items-center my-4">
@@ -47,7 +60,9 @@ export default function WaitingRoomPage() {
           {isCancelling ? 'Membatalkan...' : 'Batalkan'}
         </Button>
         {/* Tips/info */}
-        <div className="text-xs text-accent/70 mt-2 text-center italic">Tips: Sabar menunggu, gunakan waktu ini untuk menyiapkan strategi!</div>
+        <div className="text-xs text-accent/70 mt-2 text-center italic">
+          Tips: Sabar menunggu, gunakan waktu ini untuk menyiapkan strategi!
+        </div>
       </div>
     </div>
   );
