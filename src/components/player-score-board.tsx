@@ -13,7 +13,7 @@ function Player({ name, score, scoreClass }: PlayerProps) {
  * Players component displays the scores of both players.
  * @param scores - The scores for player 1 and player 2.
  */
-export default function Players({ scores }: PlayersProps) {
+export default function PlayerScoreBoard({ scores }: PlayersProps) {
   return (
     <div className="flex justify-between my-4">
       <Player name="Player 1" score={scores[1]} scoreClass="text-success" />

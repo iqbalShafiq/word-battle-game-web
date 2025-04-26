@@ -6,6 +6,7 @@ import LobbyPage from './pages/lobby.page';
 import WaitingRoomPage from './pages/waiting-room.page';
 import ForgotPasswordPage from './pages/forgot-password.page';
 import { Toaster } from './components/ui/sonner';
+import ProtectedRoute from './components/protected-route';
 
 function App() {
   return (
@@ -15,9 +16,30 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/" element={<LobbyPage />} />
-        <Route path="/waiting-room" element={<WaitingRoomPage />} />
-        <Route path="/game" element={<WordBattlePage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <LobbyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/waiting-room"
+          element={
+            <ProtectedRoute>
+              <WaitingRoomPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/game"
+          element={
+            <ProtectedRoute>
+              <WordBattlePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

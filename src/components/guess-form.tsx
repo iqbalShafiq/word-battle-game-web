@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GuessFormProps } from '../types';
-import Button from './Button';
-import Input from './Input';
+import Button from './standard-button';
+import Input from './form-input';
 
 /**
  * GuessForm component provides an input and button for submitting guesses.

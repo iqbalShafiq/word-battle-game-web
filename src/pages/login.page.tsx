@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import Input from '../components/Input';
+import Button from '../components/standard-button';
+import Input from '../components/form-input';
 import { login as loginApi } from '../services/auth.service';
 import { isValidEmail } from '../lib/utils';
 

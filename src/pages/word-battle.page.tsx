@@ -1,6 +1,6 @@
 import GuessForm from '../components/guess-form';
 import GuessHistory from '../components/guess-history';
-import Players from '../components/Players';
+import PlayerScoreBoard from '../components/player-score-board';
 import RandomWord from '../components/random-word';
 import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
@@ -17,7 +17,7 @@ export default function WordBattlePage() {
           <h1 className="text-center text-accent tracking-wider mt-0 text-3xl font-bold">
             Word Battle Game
           </h1>
-          <Players scores={scores} />
+          <PlayerScoreBoard scores={scores} />
           <div className="text-center mt-6">
             <RandomWord word={currentWord} />
             <GuessForm onGuess={handleGuess} wordLength={currentWord.length} />

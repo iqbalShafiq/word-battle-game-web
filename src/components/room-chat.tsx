@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from './Button';
-import Input from './Input';
+import Button from './standard-button';
+import Input from './form-input';
 import type { ChatHistoryProps, ChatInputProps, ChatMessageProps, RoomChatProps } from '../types';
 
 /**

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
+import Button from '../components/standard-button';
 import { useState } from 'react';
+import Spinner from '../components/spinner';
 
 export default function WaitingRoomPage() {
   const navigate = useNavigate();
@@ -47,9 +48,7 @@ export default function WaitingRoomPage() {
         </div>
         <div className="flex flex-col items-center w-full">
           {/* Spinner dan progress bar */}
-          <div className="relative flex flex-col items-center my-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-accent border-solid mb-2" />
-          </div>
+          <Spinner />
         </div>
         {/* Tombol batal */}
         <Button

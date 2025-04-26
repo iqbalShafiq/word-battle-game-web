@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
+import Button from '../components/standard-button';
 import AnimatedCollapse from '../components/animated-collapse';
 
 export default function LobbyPage() {
