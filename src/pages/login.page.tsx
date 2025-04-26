@@ -3,52 +3,38 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { login as loginApi } from '../services/auth.service';
-import { useToastStore } from '../store/toast.store';
-import { toast } from 'sonner';
 import { isValidEmail } from '../lib/utils';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const { toastMessage, clearToast } = useToastStore();
   const navigate = useNavigate();
 
-  if (toastMessage) {
-    toast.success(toastMessage);
-    clearToast();
-  }
-
-  if (toastMessage) {
-    toast.success(toastMessage);
-    clearToast();
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
+    if (error) setError('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let hasError = false;
-    if (!email) {
-      setEmailError('Email is required');
-      hasError = true;
-    } else if (!isValidEmail(email)) {
-      setEmailError('Email is not valid');
-      hasError = true;
-    } else {
-      setEmailError('');
+    let newErrors: typeof errors = {};
+    if (!form.email) {
+      newErrors.email = 'Email is required';
+    } else if (!isValidEmail(form.email)) {
+      newErrors.email = 'Email is not valid';
     }
-    if (!password) {
-      setPasswordError('Password is required');
-      hasError = true;
-    } else {
-      setPasswordError('');
+    if (!form.password) {
+      newErrors.password = 'Password is required';
     }
-    if (hasError) return;
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
     setLoading(true);
     try {
-      const res = await loginApi(email, password);
+      const res = await loginApi(form.email, form.password);
       if (res.data.code === 200 && res.data.data) {
         localStorage.setItem('player', JSON.stringify(res.data.data.player));
         navigate('/');
@@ -72,25 +58,19 @@ export default function LoginPage() {
         {error && <div className="text-danger text-center text-sm">{error}</div>}
         <Input
           type="text"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (error) setError('');
-            if (emailError) setEmailError('');
-          }}
-          error={emailError}
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
         />
         <Input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            if (error) setError('');
-            if (passwordError) setPasswordError('');
-          }}
-          error={passwordError}
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
         />
         <div className="text-right -mb-2 -mt-3">
           <Link to="/forgot-password" className="text-accent/70 hover:underline text-xs">

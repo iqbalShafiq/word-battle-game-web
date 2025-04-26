@@ -7,56 +7,45 @@ import { useToastStore } from '../store/toast.store';
 import { isValidEmail, isValidPassword } from '../lib/utils';
 
 export default function RegisterPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirmation: '' });
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [nameError, setNameError] = useState('');
   const setToast = useToastStore((state) => state.setToast);
   const navigate = useNavigate();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
+    if (error) setError('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let hasError = false;
-    if (!name) {
-      setNameError('Name is required');
-      hasError = true;
-    } else {
-      setNameError('');
+    let newErrors: typeof errors = {};
+    if (!form.name) {
+      newErrors.name = 'Name is required';
     }
-    if (!email) {
-      setEmailError('Email is required');
-      hasError = true;
-    } else if (!isValidEmail(email)) {
-      setEmailError('Email is not valid');
-      hasError = true;
-    } else {
-      setEmailError('');
+    if (!form.email) {
+      newErrors.email = 'Email is required';
+    } else if (!isValidEmail(form.email)) {
+      newErrors.email = 'Email is not valid';
     }
-    if (!password) {
-      setPasswordError('Password is required');
-      hasError = true;
-    } else if (!isValidPassword(password)) {
-      setPasswordError(
-        'Password must be at least 8 characters and include a letter, a number, and a special character'
-      );
-      hasError = true;
-    } else {
-      setPasswordError('');
+    if (!form.password) {
+      newErrors.password = 'Password is required';
+    } else if (!isValidPassword(form.password)) {
+      newErrors.password =
+        'Password must be at least 8 characters and include a letter, a number, and a special character';
+    } else if (form.password !== form.passwordConfirmation) {
+      newErrors.password = 'Password confirmation does not match';
     }
-    if (password !== passwordConfirmation) {
-      setPasswordError('Password confirmation does not match');
-      hasError = true;
-    }
-    if (hasError) return;
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
     setLoading(true);
     setError('');
     try {
-      const res = await registerApi(name, email, password);
+      const res = await registerApi(form.name, form.email, form.password);
       if (res.data.code === 201 && res.data.data) {
         setToast('Register berhasil! Silakan login!');
         navigate('/login');
@@ -80,42 +69,34 @@ export default function RegisterPage() {
         {error && <div className="text-danger text-center text-sm">{error}</div>}
         <Input
           type="text"
+          name="name"
           placeholder="Name"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            if (nameError) setNameError('');
-            if (error) setError('');
-          }}
-          error={nameError}
+          value={form.name}
+          onChange={handleChange}
+          error={errors.name}
         />
         <Input
           type="text"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (emailError) setEmailError('');
-            if (error) setError('');
-          }}
-          error={emailError}
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
         />
         <Input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            if (passwordError) setPasswordError('');
-            if (error) setError('');
-          }}
-          error={passwordError}
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
         />
         <Input
           type="password"
+          name="passwordConfirmation"
           placeholder="Password Confirmation"
-          value={passwordConfirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
+          value={form.passwordConfirmation}
+          onChange={handleChange}
         />
         <Button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'}
