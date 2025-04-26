@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/standard-button';
 import Input from '../components/form-input';
-import { login as loginApi } from '../services/auth.service';
+import { login as loginApi, confirmEmail } from '../services/auth.service';
 import { isValidEmail } from '../lib/utils';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
@@ -13,7 +13,31 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { toastMessage, clearToast } = useToastStore();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const setToast = useToastStore((s) => s.setToast);
+
+  useEffect(() => {
+    const email = searchParams.get('email');
+    console.log(email);
+    if (!email) return;
+
+    const confirmationToken = searchParams.get('confirmationToken');
+    console.log(confirmationToken);
+    if (!confirmationToken) return;
+
+    if (confirmationToken) {
+      confirmEmail(email, confirmationToken)
+        .then((res) => {
+          if (res.data.code === 200) {
+            setToast('Email berhasil dikonfirmasi! Silakan login.');
+          } else {
+            setToast(res.data.message || 'Konfirmasi email gagal!');
+          }
+        })
+        .catch(() => setToast('Konfirmasi email gagal!'));
+    }
+  }, [searchParams, setToast]);
 
   if (toastMessage) {
     toast.success(toastMessage);

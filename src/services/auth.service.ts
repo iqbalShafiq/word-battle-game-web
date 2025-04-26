@@ -16,3 +16,11 @@ export async function refreshToken() {
 export async function logout() {
   return api.post('/v1/auth/logout');
 }
+
+export async function confirmEmail(email: string, token: string) {
+  return api.get(`/v1/auth/confirm-email?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
+}
+
+export async function resetPassword(email: string, token: string, newPassword: string) {  
+  return api.post(`/v1/auth/reset-password`, { email, token, newPassword });
+}

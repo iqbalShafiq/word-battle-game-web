@@ -4,6 +4,7 @@ import Input from '../components/form-input';
 import Button from '../components/standard-button';
 import { isValidPassword } from '../lib/utils';
 import { useToastStore } from '../store/toast.store';
+import { resetPassword } from '../services/auth.service';
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -37,21 +38,15 @@ export default function ResetPasswordPage() {
     if (Object.keys(newErrors).length > 0) return;
     setLoading(true);
     try {
-      // Ganti URL dan body sesuai API kamu
-      const res = await fetch('/v1/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, email, newPassword: form.password }),
-      });
-      const data = await res.json();
-      if (res.ok && data.code === 200) {
+      const res = await resetPassword(email, token, form.password);
+      if (res.data.code === 200) {
         setToast('Password reset successful!');
         navigate('/login');
       } else {
-        setToast(data.message || 'Reset password failed!');
+        setToast(res.data.message || 'Reset password failed!');
       }
-    } catch (err) {
-      setToast('Reset password failed!');
+    } catch (err: any) {
+      setToast(err?.response?.data?.message || 'Reset password failed!');
     } finally {
       setLoading(false);
     }
