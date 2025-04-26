@@ -1,17 +1,38 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/standard-button';
 import AnimatedCollapse from '../components/animated-collapse';
+import { logout as logoutApi } from '../services/auth.service';
+import { useToastStore } from '../store/toast.store';
+import { toast } from 'sonner';
 
 export default function LobbyPage() {
   const navigate = useNavigate();
+  const setToast = useToastStore((state) => state.setToast);
+  const { toastMessage, clearToast } = useToastStore();
+
+  if (toastMessage) {
+    toast.error(toastMessage);
+    clearToast();
+  }
 
   const handleStart = () => {
     navigate('/waiting-room');
   };
 
-  const handleLogout = () => {
-    // TODO: clear token/player data jika ada
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      const res = await logoutApi();
+      if (res.data.code === 200) {
+        localStorage.removeItem('player');
+        navigate('/login');
+      } else {
+        setToast(res.data.message || 'Logout failed!');
+        console.error(res.data.message || 'Logout failed!');
+      }
+    } catch (err: any) {
+      setToast(err?.response?.data?.message || 'Logout failed!');
+      console.error(err?.response?.data?.message || 'Logout failed!');
+    }
   };
 
   return (

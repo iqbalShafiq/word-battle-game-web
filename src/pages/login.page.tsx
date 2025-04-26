@@ -4,13 +4,21 @@ import Button from '../components/standard-button';
 import Input from '../components/form-input';
 import { login as loginApi } from '../services/auth.service';
 import { isValidEmail } from '../lib/utils';
+import { useToastStore } from '../store/toast.store';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { toastMessage, clearToast } = useToastStore();
   const navigate = useNavigate();
+
+  if (toastMessage) {
+    toast.success(toastMessage);
+    clearToast();
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

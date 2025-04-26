@@ -12,3 +12,7 @@ export async function register(name: string, email: string, password: string) {
 export async function refreshToken() {
   return api.post('/v1/auth/refresh');
 }
+
+export async function logout() {
+  return api.post('/v1/auth/logout');
+}
