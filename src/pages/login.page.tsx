@@ -5,6 +5,7 @@ import Input from '../components/Input';
 import { login as loginApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
+import { isValidEmail } from '../lib/utils';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -31,6 +32,9 @@ export default function LoginPage() {
     let hasError = false;
     if (!email) {
       setEmailError('Email is required');
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      setEmailError('Email is not valid');
       hasError = true;
     } else {
       setEmailError('');
@@ -67,7 +71,7 @@ export default function LoginPage() {
         <h2 className="text-2xl font-bold text-accent mb-2 text-center">Login</h2>
         {error && <div className="text-danger text-center text-sm">{error}</div>}
         <Input
-          type="email"
+          type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => {

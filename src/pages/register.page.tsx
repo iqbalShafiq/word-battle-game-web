@@ -4,6 +4,7 @@ import Input from '../components/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as registerApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
+import { isValidEmail } from '../lib/utils';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -29,6 +30,9 @@ export default function RegisterPage() {
     }
     if (!email) {
       setEmailError('Email is required');
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      setEmailError('Email is not valid');
       hasError = true;
     } else {
       setEmailError('');
@@ -81,7 +85,7 @@ export default function RegisterPage() {
           error={nameError}
         />
         <Input
-          type="email"
+          type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => {
