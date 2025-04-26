@@ -14,10 +14,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/lobby" element={<LobbyPage />} />
-        <Route path="/waiting-room" element={<WaitingRoomPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/" element={<WordBattlePage />} />
+        <Route path="/" element={<LobbyPage />} />
+        <Route path="/waiting-room" element={<WaitingRoomPage />} />
+        <Route path="/game" element={<WordBattlePage />} />
       </Routes>
     </BrowserRouter>
   );

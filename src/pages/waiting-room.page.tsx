@@ -9,7 +9,7 @@ export default function WaitingRoomPage() {
   const handleCancel = () => {
     setIsCancelling(true);
     setTimeout(() => {
-      navigate('/lobby');
+      navigate('/');
     }, 600); // Simulasi delay cancel matchmaking
   };
 
