@@ -5,6 +5,7 @@ import WordBattlePage from './pages/word-battle.page';
 import LobbyPage from './pages/lobby.page';
 import WaitingRoomPage from './pages/waiting-room.page';
 import ForgotPasswordPage from './pages/forgot-password.page';
+import ResetPasswordPage from './pages/reset-password.page';
 import { Toaster } from './components/ui/sonner';
 import ProtectedRoute from './components/protected-route';
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route
           path="/"
           element={
