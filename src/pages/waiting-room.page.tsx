@@ -4,23 +4,19 @@ import { useState, useEffect } from 'react';
 import Spinner from '../components/spinner';
 import signalRService from '../services/signalr.service';
 import { AllPlayersJoinedData, MatchFoundData } from '../types';
+import { usePlayer } from '../hooks/usePlayer';
 
 export default function WaitingRoomPage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [match, setMatch] = useState<MatchFoundData | undefined>();
+  const player = usePlayer();
   const navigate = useNavigate();
 
   useEffect(() => {
     const connectAndJoin = async () => {
       await signalRService.startConnection();
       try {
-        const playerStr = localStorage.getItem('player');
-        let playerId: string | undefined = undefined;
-        if (playerStr) {
-          const player = JSON.parse(playerStr);
-          playerId = player.id;
-        }
-        await signalRService.invoke('JoinMatchMaking', playerId);
+        await signalRService.invoke('JoinMatchMaking', player?.id);
       } catch (err) {
         console.error('Failed to join matchmaking:', err);
       }

@@ -10,8 +10,10 @@ import { useEffect } from 'react';
 import { RoundStartedData } from '../types';
 import signalRService from '../services/signalr.service';
 import { toast } from 'sonner';
+import { usePlayer } from '../hooks/usePlayer';
 
 export default function WordBattlePage() {
+  const player = usePlayer();
   const { scores, guessHistory, handleGuess, generatedWord, setGeneratedWord, setTrueWord } =
     useGameState();
   const { chatHistory, handleSendChat } = useChatState();
@@ -20,16 +22,10 @@ export default function WordBattlePage() {
   useEffect(() => {
     const connectAndJoin = async () => {
       const gameId = searchParams.get('gameId');
-      const playerStr = localStorage.getItem('player');
-      let playerId: string | undefined = undefined;
-      if (playerStr) {
-        const player = JSON.parse(playerStr);
-        playerId = player.id;
-      }
 
       await signalRService.startConnection();
       try {
-        await signalRService.invoke('JoinGame', gameId, playerId);
+        await signalRService.invoke('JoinGame', gameId, player?.id);
       } catch (error) {
         console.error('Failed to start round:', error);
         toast.error('Failed to start round. Please try again.');
