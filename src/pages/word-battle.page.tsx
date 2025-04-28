@@ -63,7 +63,7 @@ export default function WordBattlePage() {
 
   return (
     <>
-      {isLoading && <LoadingOverlay />}
+      {(isLoading || !generatedWord) && <LoadingOverlay />}
       <div className="flex flex-1 justify-center items-center min-h-screen w-screen bg-primary">
         <div className="flex flex-row bg-none rounded-[22px] shadow-xl m-auto max-h-[90vh] h-[90vh]">
           <div className="bg-secondary rounded-l-[22px] p-10 max-w-[420px] w-full flex flex-col items-stretch max-h-[90vh] h-full overflow-auto">
