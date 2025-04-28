@@ -3,6 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import Button from './standard-button';
 import Input from './form-input';
 import type { ChatHistoryProps, ChatInputProps, ChatMessageProps, RoomChatProps } from '../types';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from './ui/alert-dialog';
+import signalRService from '../services/signalr.service';
+import { useSearchParams } from 'react-router-dom';
 
 /**
  * ChatBubble component displays a single chat message bubble.
@@ -82,6 +95,10 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
   const [msg, setMsg] = useState('');
   const chatRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [forceExitOpen, setForceExitOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const gameId = searchParams.get('gameId');
 
   useEffect(() => {
     if (chatRef.current) {
@@ -89,7 +106,16 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
     }
   }, [chatHistory]);
 
-  const handleExitGame = () => {
+  useEffect(() => {
+    const handlePlayerLeft = () => setForceExitOpen(true);
+    signalRService.on('PlayerLeft', handlePlayerLeft);
+    return () => signalRService.off('PlayerLeft', handlePlayerLeft);
+  }, []);
+
+  const handleExitGame = async () => {
+    if (gameId) {
+      await signalRService.invoke('LeaveGame', gameId);
+    }
     navigate('/login');
   };
 
@@ -97,12 +123,42 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
     <div className="bg-chatbg rounded-r-[22px] w-[320px] flex flex-col border-l-2 border-border h-full max-h-[90vh]">
       <div className="bg-info text-secondary font-bold py-4 pl-8 text-lg rounded-tr-[22px] tracking-wide flex justify-between items-center pr-4">
         <span>Roomchat</span>
-        <Button
-          onClick={handleExitGame}
-          className="bg-red-700 text-white px-3 py-1 rounded font-bold hover:bg-red-600 transition-colors text-sm"
-        >
-          Exit
-        </Button>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button
+              onClick={() => setOpen(true)}
+              className="bg-red-700 text-white px-3 py-1 rounded font-bold hover:bg-red-600 transition-colors text-sm"
+            >
+              Exit
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Keluar dari game?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Apakah kamu yakin ingin keluar dari game? Kamu tidak akan bisa kembali ke game ini.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
+              <AlertDialogAction onClick={handleExitGame}>Ya, Keluar</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <AlertDialog open={forceExitOpen} onOpenChange={setForceExitOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Pemain lain telah keluar</AlertDialogTitle>
+              <AlertDialogDescription>
+                Pemain lain telah meninggalkan game. Silakan klik keluar untuk kembali ke halaman
+                utama.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleExitGame}>Keluar</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <ChatHistory chatHistory={chatHistory} chatRef={chatRef} />
       <ChatInput msg={msg} setMsg={setMsg} onSend={onSend} />
