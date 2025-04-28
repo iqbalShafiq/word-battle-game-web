@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import GuessForm from '../components/guess-form';
 import GuessHistory from '../components/guess-history';
 import PlayerScoreBoard from '../components/player-score-board';
@@ -5,10 +6,56 @@ import RandomWord from '../components/random-word';
 import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
 import { useGameState } from '../hooks/useGameState';
+import { useEffect } from 'react';
+import { RoundStartedData } from '../types';
+import signalRService from '../services/signalr.service';
+import { toast } from 'sonner';
 
 export default function WordBattlePage() {
-  const { scores, currentWord, guessHistory, handleGuess } = useGameState();
+  const { scores, guessHistory, handleGuess, generatedWord, setGeneratedWord, setTrueWord } =
+    useGameState();
   const { chatHistory, handleSendChat } = useChatState();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const connectAndJoin = async () => {
+      const gameId = searchParams.get('gameId');
+      const playerStr = localStorage.getItem('player');
+      let playerId: string | undefined = undefined;
+      if (playerStr) {
+        const player = JSON.parse(playerStr);
+        playerId = player.id;
+      }
+
+      await signalRService.startConnection();
+      try {
+        await signalRService.invoke('JoinGame', gameId, playerId);
+      } catch (error) {
+        console.error('Failed to start round:', error);
+        toast.error('Failed to start round. Please try again.');
+      }
+    };
+
+    connectAndJoin();
+
+    return () => {
+      signalRService.stopConnection();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleRoundStarted = (data: RoundStartedData) => {
+      console.log('Round started:', data);
+      setGeneratedWord(data.generatedWord);
+      setTrueWord(data.trueWord);
+    };
+
+    signalRService.on('RoundStarted', handleRoundStarted);
+
+    return () => {
+      signalRService.off('RoundStarted', handleRoundStarted);
+    };
+  }, []);
 
   return (
     <div className="flex flex-1 justify-center items-center min-h-screen w-screen bg-primary">
@@ -19,8 +66,8 @@ export default function WordBattlePage() {
           </h1>
           <PlayerScoreBoard scores={scores} />
           <div className="text-center mt-6">
-            <RandomWord word={currentWord} />
-            <GuessForm onGuess={handleGuess} wordLength={currentWord.length} />
+            <RandomWord word={generatedWord} />
+            <GuessForm onGuess={handleGuess} wordLength={generatedWord.length} />
           </div>
           <GuessHistory history={guessHistory} />
         </div>

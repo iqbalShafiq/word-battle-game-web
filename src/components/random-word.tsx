@@ -9,7 +9,7 @@ export default function RandomWord({ word }: RandomWordProps) {
     <div className="text-2xl tracking-widest text-accent mb-4 font-bold bg-primary rounded-[10px] inline-block px-8 py-2 border-2 border-dashed border-info select-none">
       {word
         .split('')
-        .map((c, _i) => (c === ' ' ? ' ' : '_'))
+        .map((c, _i) => (c === ' ' ? ' ' : c))
         .join(' ')}
     </div>
   );

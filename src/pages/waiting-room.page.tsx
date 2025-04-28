@@ -26,10 +26,6 @@ export default function WaitingRoomPage() {
       }
     };
     connectAndJoin();
-
-    return () => {
-      signalRService.stopConnection();
-    };
   }, []);
 
   useEffect(() => {
@@ -48,27 +44,20 @@ export default function WaitingRoomPage() {
   useEffect(() => {
     const handlePlayersJoined = (data: AllPlayersJoinedData) => {
       console.log('All players joined:', data);
-      navigate(`/game/${data.gameId}`);
-    }
+      navigate(`/game?gameId=${data.gameId}`);
+    };
 
     signalRService.on('AllPlayersJoined', handlePlayersJoined);
 
     return () => {
       signalRService.off('AllPlayersJoined', handlePlayersJoined);
     };
-  }, [])
+  }, []);
 
   const handleJoinGame = async () => {
     console.log('Joining game...');
-    const playerStr = localStorage.getItem('player');
-    let playerId: string | undefined = undefined;
-
-    if (playerStr) {
-      const player = JSON.parse(playerStr);
-      playerId = player.id;
-    }
-
-    await signalRService.invoke('JoinGame', match?.gameId, playerId);
+    const gameId = match?.gameId;
+    navigate(`/game?gameId=${gameId}`);
   };
 
   const handleCancel = () => {
