@@ -4,7 +4,6 @@ import AnimatedCollapse from '../components/animated-collapse';
 import { logout as logoutApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
-import React from 'react';
 import { usePlayer } from '../hooks/usePlayer';
 
 export default function LobbyPage() {

@@ -11,17 +11,23 @@ import { RoundStartedData } from '../types';
 import signalRService from '../services/signalr.service';
 import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
+import React from 'react';
+import LoadingOverlay from '../components/loading-overlay';
 
 export default function WordBattlePage() {
-  const player = usePlayer();
   const { scores, guessHistory, handleGuess, generatedWord, setGeneratedWord, setTrueWord } =
     useGameState();
   const { chatHistory, handleSendChat } = useChatState();
   const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const player = usePlayer();
 
   useEffect(() => {
+    if (!player) return;
+
     const connectAndJoin = async () => {
       const gameId = searchParams.get('gameId');
+      setIsLoading(true);
 
       await signalRService.startConnection();
       try {
@@ -29,6 +35,8 @@ export default function WordBattlePage() {
       } catch (error) {
         console.error('Failed to start round:', error);
         toast.error('Failed to start round. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -37,7 +45,7 @@ export default function WordBattlePage() {
     return () => {
       signalRService.stopConnection();
     };
-  }, []);
+  }, [player]);
 
   useEffect(() => {
     const handleRoundStarted = (data: RoundStartedData) => {
@@ -54,21 +62,24 @@ export default function WordBattlePage() {
   }, []);
 
   return (
-    <div className="flex flex-1 justify-center items-center min-h-screen w-screen bg-primary">
-      <div className="flex flex-row bg-none rounded-[22px] shadow-xl m-auto max-h-[90vh] h-[90vh]">
-        <div className="bg-secondary rounded-l-[22px] p-10 max-w-[420px] w-full flex flex-col items-stretch max-h-[90vh] h-full overflow-auto">
-          <h1 className="text-center text-accent tracking-wider mt-0 text-3xl font-bold">
-            Word Battle Game
-          </h1>
-          <PlayerScoreBoard scores={scores} />
-          <div className="text-center mt-6">
-            <RandomWord word={generatedWord} />
-            <GuessForm onGuess={handleGuess} wordLength={generatedWord.length} />
+    <>
+      {isLoading && <LoadingOverlay />}
+      <div className="flex flex-1 justify-center items-center min-h-screen w-screen bg-primary">
+        <div className="flex flex-row bg-none rounded-[22px] shadow-xl m-auto max-h-[90vh] h-[90vh]">
+          <div className="bg-secondary rounded-l-[22px] p-10 max-w-[420px] w-full flex flex-col items-stretch max-h-[90vh] h-full overflow-auto">
+            <h1 className="text-center text-accent tracking-wider mt-0 text-3xl font-bold">
+              Word Battle Game
+            </h1>
+            <PlayerScoreBoard scores={scores} />
+            <div className="text-center mt-6">
+              <RandomWord word={generatedWord} />
+              <GuessForm onGuess={handleGuess} wordLength={generatedWord.length} />
+            </div>
+            <GuessHistory history={guessHistory} />
           </div>
-          <GuessHistory history={guessHistory} />
+          <RoomChat chatHistory={chatHistory} onSend={handleSendChat} />
         </div>
-        <RoomChat chatHistory={chatHistory} onSend={handleSendChat} />
       </div>
-    </div>
+    </>
   );
 }

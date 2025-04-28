@@ -13,6 +13,8 @@ export default function WaitingRoomPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!player) return;
+    
     const connectAndJoin = async () => {
       await signalRService.startConnection();
       try {
@@ -22,7 +24,7 @@ export default function WaitingRoomPage() {
       }
     };
     connectAndJoin();
-  }, []);
+  }, [player]);
 
   useEffect(() => {
     const handleMatchFound = (data: MatchFoundData) => {
