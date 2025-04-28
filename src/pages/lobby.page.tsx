@@ -4,8 +4,11 @@ import AnimatedCollapse from '../components/animated-collapse';
 import { logout as logoutApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
+import React from 'react';
+import { usePlayer } from '../hooks/usePlayer';
 
 export default function LobbyPage() {
+  const player = usePlayer();
   const navigate = useNavigate();
   const setToast = useToastStore((state) => state.setToast);
   const { toastMessage, clearToast } = useToastStore();
@@ -46,9 +49,8 @@ export default function LobbyPage() {
             alt="avatar"
             className="w-16 h-16 rounded-full border-2 border-accent mb-2"
           />
-          <span className="text-accent font-semibold text-lg mb-1">Player123</span>
-          <span className="text-accent/70 text-sm mb-2">5 players online</span>
-          <span className="text-xs text-accent/60">Status: Ready</span>
+          <span className="text-accent font-semibold text-lg mb-1">{player?.name}</span>
+          <span className="text-accent/70 text-sm mb-2">Let's Play</span>
           {/* Tombol logout full card, hanya muncul saat hover */}
           <Button
             onClick={handleLogout}

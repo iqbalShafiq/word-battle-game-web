@@ -47,15 +47,18 @@ export interface ApiResponse<T = undefined> {
   code: number;
 }
 
+// Player data type
+export interface PlayerData {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+}
+
 // Login data type
 export interface LoginData {
   token: string;
-  player: {
-    id: string;
-    name: string;
-    email: string;
-    createdAt: string;
-  };
+  player: PlayerData;
   refreshToken: string;
 }
 
