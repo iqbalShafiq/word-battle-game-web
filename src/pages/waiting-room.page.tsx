@@ -3,10 +3,12 @@ import Button from '../components/standard-button';
 import { useState, useEffect } from 'react';
 import Spinner from '../components/spinner';
 import signalRService from '../services/signalr.service';
+import { AllPlayersJoinedData, MatchFoundData } from '../types';
 
 export default function WaitingRoomPage() {
-  const navigate = useNavigate();
   const [isCancelling, setIsCancelling] = useState(false);
+  const [match, setMatch] = useState<MatchFoundData | undefined>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const connectAndJoin = async () => {
@@ -29,6 +31,45 @@ export default function WaitingRoomPage() {
       signalRService.stopConnection();
     };
   }, []);
+
+  useEffect(() => {
+    const handleMatchFound = (data: MatchFoundData) => {
+      console.log('Match found:', data);
+      setMatch(data);
+    };
+
+    signalRService.on('MatchFound', handleMatchFound);
+
+    return () => {
+      signalRService.off('MatchFound', handleMatchFound);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePlayersJoined = (data: AllPlayersJoinedData) => {
+      console.log('All players joined:', data);
+      navigate(`/game/${data.gameId}`);
+    }
+
+    signalRService.on('AllPlayersJoined', handlePlayersJoined);
+
+    return () => {
+      signalRService.off('AllPlayersJoined', handlePlayersJoined);
+    };
+  }, [])
+
+  const handleJoinGame = async () => {
+    console.log('Joining game...');
+    const playerStr = localStorage.getItem('player');
+    let playerId: string | undefined = undefined;
+
+    if (playerStr) {
+      const player = JSON.parse(playerStr);
+      playerId = player.id;
+    }
+
+    await signalRService.invoke('JoinGame', match?.gameId, playerId);
+  };
 
   const handleCancel = () => {
     setIsCancelling(true);
@@ -73,14 +114,22 @@ export default function WaitingRoomPage() {
           {/* Spinner dan progress bar */}
           <Spinner />
         </div>
-        {/* Tombol batal */}
-        <Button
-          className="w-48 py-2 text-md rounded-full bg-white/20 backdrop-blur-md text-danger font-bold flex items-center justify-center gap-2 shadow-lg border-none hover:bg-danger hover:text-white transition-colors duration-200 mb-2"
-          onClick={handleCancel}
-          disabled={isCancelling}
-        >
-          {isCancelling ? 'Membatalkan...' : 'Batalkan'}
-        </Button>
+        {match ? (
+          <Button onClick={handleJoinGame}>Join Game</Button>
+        ) : (
+          <Button
+            className="w-48 py-2 text-md rounded-full bg-white/20 backdrop-blur-md text-danger font-bold flex items-center justify-center gap-2 shadow-lg border-none hover:bg-danger hover:text-white transition-colors duration-200 mb-2"
+            onClick={handleCancel}
+            disabled={isCancelling}
+          >
+            {isCancelling ? 'Membatalkan...' : 'Batalkan'}
+          </Button>
+        )}
+        {match && (
+          <div className="text-md font-semibold text-success mt-2 text-center">
+            Match found! Preparing to start the game...
+          </div>
+        )}
         {/* Tips/info */}
         <div className="text-xs text-accent/70 mt-2 text-center italic">
           Tips: Sabar menunggu, gunakan waktu ini untuk menyiapkan strategi!

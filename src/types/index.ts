@@ -66,3 +66,33 @@ export interface RegisterData {
   email: string;
   createdAt: string;
 }
+
+// Match has found type
+export interface MatchFoundData {
+  gameId: string;
+  matchedPlayerIds: string[];
+}
+
+// All players joined type
+export interface AllPlayersJoinedData {
+  gameId: string;
+}
+
+// Round started type
+export interface RoundStartedData {
+  roundId: string;
+  generatedWord: string;
+  trueWord: string;
+  roundNumber: number;
+}
+
+// Round ended type
+export interface RoundEndedData {
+  trueWord: string;
+  winnerPlayerId: string;
+}
+
+// Word correction type
+export interface WordCorrectionData {
+  trueWord: string;
+}
