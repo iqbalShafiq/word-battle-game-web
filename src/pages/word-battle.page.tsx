@@ -21,6 +21,7 @@ export default function WordBattlePage() {
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = React.useState(false);
   const player = usePlayer();
+  const [countdown, setCountdown] = React.useState<number | null>(null);
 
   useEffect(() => {
     if (!player) return;
@@ -42,8 +43,12 @@ export default function WordBattlePage() {
 
     connectAndJoin();
 
+    const handleCountdownTick = (value: number) => setCountdown(value);
+    signalRService.on('CountdownTick', handleCountdownTick);
+
     return () => {
       signalRService.stopConnection();
+      signalRService.off('CountdownTick', handleCountdownTick);
     };
   }, [player]);
 
@@ -70,6 +75,9 @@ export default function WordBattlePage() {
             <h1 className="text-center text-accent tracking-wider mt-0 text-3xl font-bold">
               Word Battle Game
             </h1>
+            {countdown !== null && (
+              <div className="text-2xl text-center font-bold text-accent mt-2 mb-1">{countdown}</div>
+            )}
             <PlayerScoreBoard scores={scores} />
             <div className="text-center mt-6">
               <RandomWord word={generatedWord} />
