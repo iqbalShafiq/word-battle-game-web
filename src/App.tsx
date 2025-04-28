@@ -8,16 +8,45 @@ import ForgotPasswordPage from './pages/forgot-password.page';
 import ResetPasswordPage from './pages/reset-password.page';
 import { Toaster } from './components/ui/sonner';
 import ProtectedRoute from './components/protected-route';
+import AuthRoute from './components/auth-route';
 
 function App() {
   return (
     <BrowserRouter>
       <Toaster richColors />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          path="/login"
+          element={
+            <AuthRoute>
+              <LoginPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthRoute>
+              <RegisterPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthRoute>
+              <ForgotPasswordPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <AuthRoute>
+              <ResetPasswordPage />
+            </AuthRoute>
+          }
+        />
         <Route
           path="/"
           element={

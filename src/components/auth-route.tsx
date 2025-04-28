@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import api from '../services/axios';
 import Spinner from './spinner';
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+export default function AuthRoute({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -15,11 +15,12 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return (
-    <div className="flex justify-center items-center min-h-screen bg-primary">
-      <Spinner />
-    </div>
-  )
-  if (!authenticated) return <Navigate to="/login" replace />;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-primary">
+        <Spinner />
+      </div>
+    );
+  if (authenticated) return <Navigate to="/" replace />;
   return <>{children}</>;
 }
