@@ -1,11 +1,34 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/standard-button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Spinner from '../components/spinner';
+import signalRService from '../services/signalr.service';
 
 export default function WaitingRoomPage() {
   const navigate = useNavigate();
   const [isCancelling, setIsCancelling] = useState(false);
+
+  useEffect(() => {
+    const connectAndJoin = async () => {
+      await signalRService.startConnection();
+      try {
+        const playerStr = localStorage.getItem('player');
+        let playerId: string | undefined = undefined;
+        if (playerStr) {
+          const player = JSON.parse(playerStr);
+          playerId = player.id;
+        }
+        await signalRService.invoke('JoinMatchMaking', playerId);
+      } catch (err) {
+        console.error('Failed to join matchmaking:', err);
+      }
+    };
+    connectAndJoin();
+
+    return () => {
+      signalRService.stopConnection();
+    };
+  }, []);
 
   const handleCancel = () => {
     setIsCancelling(true);
