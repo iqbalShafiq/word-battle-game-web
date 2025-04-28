@@ -89,8 +89,7 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
     }
   }, [chatHistory]);
 
-  const handleLogout = () => {
-    // TODO: handle actual logout logic (clear token, etc) if needed
+  const handleExitGame = () => {
     navigate('/login');
   };
 
@@ -99,10 +98,10 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
       <div className="bg-info text-secondary font-bold py-4 pl-8 text-lg rounded-tr-[22px] tracking-wide flex justify-between items-center pr-4">
         <span>Roomchat</span>
         <Button
-          onClick={handleLogout}
+          onClick={handleExitGame}
           className="bg-red-700 text-white px-3 py-1 rounded font-bold hover:bg-red-600 transition-colors text-sm"
         >
-          Logout
+          Exit
         </Button>
       </div>
       <ChatHistory chatHistory={chatHistory} chatRef={chatRef} />

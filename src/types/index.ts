@@ -99,3 +99,9 @@ export interface RoundEndedData {
 export interface WordCorrectionData {
   trueWord: string;
 }
+
+// Received message type
+export interface ReceivedMessageData {
+  playerId: string;
+  message: string;
+}
