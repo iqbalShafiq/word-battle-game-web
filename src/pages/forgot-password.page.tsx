@@ -4,6 +4,7 @@ import Button from '../components/standard-button';
 import Input from '../components/form-input';
 import { toast } from 'sonner';
 import { requestPasswordReset } from '../services/auth.service';
+import { getErrorMessage } from '../lib/utils';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -21,8 +22,8 @@ export default function ForgotPasswordPage() {
       } else {
         toast.error(res.data.message || 'Failed to send reset link.');
       }
-    } catch (err: any) {
-      toast.error('Failed to send reset link.');
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

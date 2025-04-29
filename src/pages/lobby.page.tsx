@@ -6,6 +6,7 @@ import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
 import { usePlayerStats } from '../hooks/usePlayerStats';
+import { getErrorMessage } from '../lib/utils';
 
 export default function LobbyPage() {
   const player = usePlayer();
@@ -33,9 +34,8 @@ export default function LobbyPage() {
         setToast(res.data.message || 'Logout failed!');
         console.error(res.data.message || 'Logout failed!');
       }
-    } catch (err: any) {
-      setToast(err?.response?.data?.message || 'Logout failed!');
-      console.error(err?.response?.data?.message || 'Logout failed!');
+    } catch (err: unknown) {
+      setToast(getErrorMessage(err));
     }
   };
 
@@ -53,7 +53,7 @@ export default function LobbyPage() {
           <span className="text-accent font-semibold text-lg mb-1">{player?.name}</span>
           <span className="text-accent/70 text-sm mb-2">Let's Play</span>
           {/* Player stats icons */}
-          <div className="flex flex-row items-center gap-4 my-2">
+          <div className="flex flex-row items-center gap-4 my-2 bg-white/10 rounded-lg px-4 py-2 shadow">
             <div className="flex flex-col items-center text-xs text-accent">
               <span className="text-lg">🎮</span>
               <span className="font-bold">{statsLoading ? '-' : (stats?.totalGames ?? 0)}</span>
@@ -86,8 +86,8 @@ export default function LobbyPage() {
         </div>
         {/* Deskripsi dan tombol mulai */}
         <h1 className="text-3xl font-bold text-accent my-2 animate-bounce">Word Battle Game</h1>
-        <p className="text-base text-accent/80 mb-3 text-center font-normal max-w-xs">
-          Adu cepat menebak kata dengan pemain lain. Siap jadi yang tercepat?
+        <p className="text-base text-accent/80 mb-3 text-center font-medium max-w-xs">
+          Adu cepat tebak kata!
         </p>
         <Button
           className="w-48 py-3 text-md my-2 shadow-lg bg-yellow-400 hover:bg-yellow-500 text-accent"

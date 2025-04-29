@@ -14,3 +14,13 @@ export function isValidPassword(password: string): boolean {
   // Minimal 8 karakter, mengandung huruf, angka, dan karakter spesial
   return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/.test(password);
 }
+
+export function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) {
+    return err.message;
+  }
+  if (typeof err === 'object' && err !== null && 'message' in err) {
+    return String((err as { message: unknown }).message);
+  }
+  return 'Terjadi error yang tidak diketahui';
+}

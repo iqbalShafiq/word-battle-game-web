@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Input from '../components/form-input';
 import Button from '../components/standard-button';
-import { isValidPassword } from '../lib/utils';
+import { getErrorMessage, isValidPassword } from '../lib/utils';
 import { useToastStore } from '../store/toast.store';
 import { resetPassword } from '../services/auth.service';
 
@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let newErrors: typeof errors = {};
+    const newErrors: typeof errors = {};
     if (!form.password) {
       newErrors.password = 'Password is required';
     } else if (!isValidPassword(form.password)) {
@@ -45,8 +45,8 @@ export default function ResetPasswordPage() {
       } else {
         setToast(res.data.message || 'Reset password failed!');
       }
-    } catch (err: any) {
-      setToast(err?.response?.data?.message || 'Reset password failed!');
+    } catch (err: unknown) {
+      setToast(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

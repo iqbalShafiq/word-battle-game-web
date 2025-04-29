@@ -4,7 +4,7 @@ import Input from '../components/form-input';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as registerApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
-import { isValidEmail, isValidPassword } from '../lib/utils';
+import { getErrorMessage, isValidEmail, isValidPassword } from '../lib/utils';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirmation: '' });
@@ -23,7 +23,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let newErrors: typeof errors = {};
+    const newErrors: typeof errors = {};
     if (!form.name) {
       newErrors.name = 'Name is required';
     }
@@ -52,8 +52,8 @@ export default function RegisterPage() {
       } else {
         setError(res.data.message || 'Register failed!');
       }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || 'Register failed!');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/standard-button';
 import Input from '../components/form-input';
 import { login as loginApi, confirmEmail } from '../services/auth.service';
-import { isValidEmail } from '../lib/utils';
+import { getErrorMessage, isValidEmail } from '../lib/utils';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
 
@@ -53,7 +53,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let newErrors: typeof errors = {};
+    const newErrors: typeof errors = {};
     if (!form.email) {
       newErrors.email = 'Email is required';
     } else if (!isValidEmail(form.email)) {
@@ -73,8 +73,8 @@ export default function LoginPage() {
       } else {
         setError(res.data.message || 'Login failed!');
       }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || 'Login failed!');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

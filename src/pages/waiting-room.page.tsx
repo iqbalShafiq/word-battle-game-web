@@ -50,7 +50,7 @@ export default function WaitingRoomPage() {
     return () => {
       signalRService.off('AllPlayersJoined', handlePlayersJoined);
     };
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const handlePlayerLeft = (data: string) => {
@@ -65,7 +65,7 @@ export default function WaitingRoomPage() {
     return () => {
       signalRService.off('MatchMakingFailed', handlePlayerLeft);
     };
-  }, []);
+  }, [navigate, setToast]);
 
   const handleJoinGame = async () => {
     console.log('Joining game...');

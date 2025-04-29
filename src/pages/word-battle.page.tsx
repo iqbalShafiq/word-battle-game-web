@@ -50,7 +50,7 @@ export default function WordBattlePage() {
       signalRService.stopConnection();
       signalRService.off('CountdownTick', handleCountdownTick);
     };
-  }, [player]);
+  }, [player, searchParams]);
 
   useEffect(() => {
     const handleRoundStarted = (data: RoundStartedData) => {
@@ -64,7 +64,7 @@ export default function WordBattlePage() {
     return () => {
       signalRService.off('RoundStarted', handleRoundStarted);
     };
-  }, []);
+  }, [setGeneratedWord, setTrueWord]);
 
   return (
     <>

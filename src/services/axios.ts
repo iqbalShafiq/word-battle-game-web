@@ -10,11 +10,11 @@ const api = axios.create({
 let isRefreshing = false;
 let failedQueue: {
   resolve: (value?: AxiosResponse | PromiseLike<AxiosResponse>) => void;
-  reject: (reason?: any) => void;
+  reject: (reason?: unknown) => void;
   config: AxiosRequestConfig;
 }[] = [];
 
-const processQueue = (error: any) => {
+const processQueue = (error: unknown) => {
   failedQueue.forEach(({ reject }) => {
     if (error) {
       reject(error);

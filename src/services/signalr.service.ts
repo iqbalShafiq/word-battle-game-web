@@ -49,21 +49,24 @@ class SignalRService {
     }
   };
 
-  public on = (event: string, callback: (...args: any[]) => void) => {
+  public on<T extends unknown[]>(event: string, callback: (...args: T) => void) {
     this.connection?.on(event, callback);
-  };
+  }
 
-  public off = (event: string, callback: (...args: any[]) => void) => {
+  public off<T extends unknown[]>(event: string, callback: (...args: T) => void) {
     this.connection?.off(event, callback);
-  };
+  }
 
-  public invoke = async (method: string, ...args: any[]) => {
+  public async invoke<T = unknown, A extends unknown[] = unknown[]>(
+    method: string,
+    ...args: A
+  ): Promise<T> {
     if (!this.connection) throw new Error('SignalR not connected');
     if (this.connection.state !== HubConnectionState.Connected) {
       await this.waitForConnected();
     }
-    return this.connection.invoke(method, ...args);
-  };
+    return this.connection.invoke<T>(method, ...args);
+  }
 }
 
 const signalRService = new SignalRService();
