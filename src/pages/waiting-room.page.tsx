@@ -53,7 +53,8 @@ export default function WaitingRoomPage() {
   }, []);
 
   useEffect(() => {
-    const handlePlayerLeft = () => {
+    const handlePlayerLeft = (data: string) => {
+      console.log('Player left:', data);
       console.log('Matchmaking failed, other player left the game');
       setToast('Matchmaking failed, other player left the game!');
       navigate('/login');
@@ -72,11 +73,11 @@ export default function WaitingRoomPage() {
     navigate(`/game?gameId=${gameId}`);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     setIsCancelling(true);
-    setTimeout(() => {
-      navigate('/');
-    }, 600); // Simulasi delay cancel matchmaking
+    await signalRService.invoke('LeaveMatchMaking', player?.id);
+    setToast('Matchmaking cancelled!');
+    navigate('/');
   };
 
   return (
