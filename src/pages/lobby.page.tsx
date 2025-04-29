@@ -5,12 +5,14 @@ import { logout as logoutApi } from '../services/auth.service';
 import { useToastStore } from '../store/toast.store';
 import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
+import { usePlayerStats } from '../hooks/usePlayerStats';
 
 export default function LobbyPage() {
   const player = usePlayer();
   const navigate = useNavigate();
   const setToast = useToastStore((state) => state.setToast);
   const { toastMessage, clearToast } = useToastStore();
+  const { stats, loading: statsLoading } = usePlayerStats();
 
   if (toastMessage) {
     toast.error(toastMessage);
@@ -50,6 +52,29 @@ export default function LobbyPage() {
           />
           <span className="text-accent font-semibold text-lg mb-1">{player?.name}</span>
           <span className="text-accent/70 text-sm mb-2">Let's Play</span>
+          {/* Player stats icons */}
+          <div className="flex flex-row items-center gap-4 my-2">
+            <div className="flex flex-col items-center text-xs text-accent">
+              <span className="text-lg">🎮</span>
+              <span className="font-bold">{statsLoading ? '-' : (stats?.totalGames ?? 0)}</span>
+            </div>
+            <div className="flex flex-col items-center text-xs text-yellow-400">
+              <span className="text-lg">⭐</span>
+              <span className="font-bold">{statsLoading ? '-' : (stats?.totalScore ?? 0)}</span>
+            </div>
+            <div className="flex flex-col items-center text-xs text-green-500">
+              <span className="text-lg">🏆</span>
+              <span className="font-bold">{statsLoading ? '-' : (stats?.win ?? 0)}</span>
+            </div>
+            <div className="flex flex-col items-center text-xs text-red-500">
+              <span className="text-lg">❌</span>
+              <span className="font-bold">{statsLoading ? '-' : (stats?.lose ?? 0)}</span>
+            </div>
+            <div className="flex flex-col items-center text-xs text-blue-400">
+              <span className="text-lg">🤝</span>
+              <span className="font-bold">{statsLoading ? '-' : (stats?.draw ?? 0)}</span>
+            </div>
+          </div>
           {/* Tombol logout full card, hanya muncul saat hover */}
           <Button
             onClick={handleLogout}

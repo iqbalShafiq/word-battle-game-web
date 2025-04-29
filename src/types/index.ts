@@ -55,6 +55,15 @@ export interface PlayerData {
   createdAt: string;
 }
 
+// Player stats data type
+export interface PlayerStats {
+  totalScore: number;
+  totalGames: number;
+  win: number;
+  lose: number;
+  draw: number;
+}
+
 // Login data type
 export interface LoginData {
   token: string;
