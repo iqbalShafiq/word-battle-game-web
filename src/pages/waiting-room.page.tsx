@@ -5,16 +5,18 @@ import Spinner from '../components/spinner';
 import signalRService from '../services/signalr.service';
 import { AllPlayersJoinedData, MatchFoundData } from '../types';
 import { usePlayer } from '../hooks/usePlayer';
+import { useToastStore } from '../store/toast.store';
 
 export default function WaitingRoomPage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [match, setMatch] = useState<MatchFoundData | undefined>();
   const player = usePlayer();
+  const setToast = useToastStore((state) => state.setToast);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!player) return;
-    
+
     const connectAndJoin = async () => {
       await signalRService.startConnection();
       try {
@@ -49,6 +51,20 @@ export default function WaitingRoomPage() {
 
     return () => {
       signalRService.off('AllPlayersJoined', handlePlayersJoined);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePlayerLeft = () => {
+      console.log('Matchmaking failed, other player left the game');
+      setToast('Matchmaking failed, other player left the game!');
+      navigate('/login');
+    };
+
+    signalRService.on('MatchMakingFailed', handlePlayerLeft);
+
+    return () => {
+      signalRService.off('MatchMakingFailed', handlePlayerLeft);
     };
   }, []);
 
@@ -94,9 +110,15 @@ export default function WaitingRoomPage() {
           </div>
         </div>
         {/* Pesan dan spinner */}
-        <div className="text-md font-semibold text-textmuted mb-2 text-center">
-          Menunggu pemain lain untuk matchmaking...
-        </div>
+        {match ? (
+          <div className="text-md font-semibold text-success mt-2 text-center">
+            Match found! Preparing to start the game...
+          </div>
+        ) : (
+          <div className="text-md font-semibold text-textmuted mb-2 text-center">
+            Menunggu pemain lain untuk matchmaking...
+          </div>
+        )}
         <div className="flex flex-col items-center w-full">
           {/* Spinner dan progress bar */}
           <Spinner />
@@ -105,17 +127,12 @@ export default function WaitingRoomPage() {
           <Button onClick={handleJoinGame}>Join Game</Button>
         ) : (
           <Button
-            className="w-48 py-2 text-md rounded-full bg-white/20 backdrop-blur-md text-danger font-bold flex items-center justify-center gap-2 shadow-lg border-none hover:bg-danger hover:text-white transition-colors duration-200 mb-2"
+            className="cursor-pointer w-48 py-2 text-md rounded-full bg-white/20 backdrop-blur-md text-danger font-bold flex items-center justify-center gap-2 shadow-lg border-none hover:bg-danger hover:text-white transition-colors duration-200 mb-2"
             onClick={handleCancel}
             disabled={isCancelling}
           >
             {isCancelling ? 'Membatalkan...' : 'Batalkan'}
           </Button>
-        )}
-        {match && (
-          <div className="text-md font-semibold text-success mt-2 text-center">
-            Match found! Preparing to start the game...
-          </div>
         )}
         {/* Tips/info */}
         <div className="text-xs text-accent/70 mt-2 text-center italic">

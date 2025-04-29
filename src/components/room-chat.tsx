@@ -16,6 +16,7 @@ import {
 } from './ui/alert-dialog';
 import signalRService from '../services/signalr.service';
 import { useSearchParams } from 'react-router-dom';
+import { usePlayer } from '../hooks/usePlayer';
 
 /**
  * ChatBubble component displays a single chat message bubble.
@@ -99,6 +100,7 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
   const [forceExitOpen, setForceExitOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const gameId = searchParams.get('gameId');
+  const player = usePlayer();
 
   useEffect(() => {
     if (chatRef.current) {
@@ -109,14 +111,21 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
   useEffect(() => {
     const handlePlayerLeft = () => setForceExitOpen(true);
     signalRService.on('PlayerLeft', handlePlayerLeft);
-    return () => signalRService.off('PlayerLeft', handlePlayerLeft);
+    signalRService.on('MatchMakingFailed', handlePlayerLeft);
+    return () => {
+      signalRService.off('PlayerLeft', handlePlayerLeft);
+      signalRService.off('MatchMakingFailed', handlePlayerLeft);
+    };
   }, []);
 
   const handleExitGame = async () => {
-    if (gameId) {
-      await signalRService.invoke('LeaveGame', gameId);
+    try {
+      if (gameId) await signalRService.invoke('LeaveGame', gameId, player?.id);
+    } catch (error) {
+      console.error('Error leaving game:', error);
+    } finally {
+      navigate('/');
     }
-    navigate('/login');
   };
 
   return (
