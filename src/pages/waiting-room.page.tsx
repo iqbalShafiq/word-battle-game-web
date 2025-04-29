@@ -17,29 +17,27 @@ export default function WaitingRoomPage() {
   useEffect(() => {
     if (!player) return;
 
+    const handleMatchFound = (data: MatchFoundData) => {
+      setMatch(data);
+    };
+
     const connectAndJoin = async () => {
       await signalRService.startConnection();
+      signalRService.on('MatchFound', handleMatchFound);
+
       try {
         await signalRService.invoke('JoinMatchMaking', player?.id);
       } catch (err) {
         console.error('Failed to join matchmaking:', err);
       }
     };
+
     connectAndJoin();
-  }, [player]);
-
-  useEffect(() => {
-    const handleMatchFound = (data: MatchFoundData) => {
-      console.log('Match found:', data);
-      setMatch(data);
-    };
-
-    signalRService.on('MatchFound', handleMatchFound);
 
     return () => {
       signalRService.off('MatchFound', handleMatchFound);
     };
-  }, []);
+  }, [player]);
 
   useEffect(() => {
     const handlePlayersJoined = (data: AllPlayersJoinedData) => {

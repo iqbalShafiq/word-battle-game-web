@@ -118,9 +118,9 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
     };
   }, []);
 
-  const handleExitGame = async () => {
+  const handleExitGame = async (playerId: string | undefined) => {
     try {
-      if (gameId) await signalRService.invoke('LeaveGame', gameId, player?.id);
+      if (gameId) await signalRService.invoke('LeaveGame', gameId, playerId);
     } catch (error) {
       console.error('Error leaving game:', error);
     } finally {
@@ -150,7 +150,7 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Batal</AlertDialogCancel>
-              <AlertDialogAction onClick={handleExitGame}>Ya, Keluar</AlertDialogAction>
+              <AlertDialogAction disabled={!player?.id} onClick={() => handleExitGame(player?.id)}>Ya, Keluar</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -164,7 +164,7 @@ export default function RoomChat({ chatHistory, onSend }: RoomChatProps) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogAction onClick={handleExitGame}>Keluar</AlertDialogAction>
+              <AlertDialogAction disabled={!player?.id} onClick={() => handleExitGame(player?.id)}>Keluar</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
