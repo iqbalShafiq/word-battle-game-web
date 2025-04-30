@@ -7,7 +7,7 @@ import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
 import { useGameState } from '../hooks/useGameState';
 import { useEffect, useRef } from 'react';
-import { RoundStartedData } from '../types';
+import { AnswerSubmittedData, RoundStartedData } from '../types';
 import signalRService from '../services/signalr.service';
 import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
@@ -36,6 +36,7 @@ export default function WordBattlePage() {
   const roundIdRef = useRef<string>('');
   const [gameEndedOpen, setGameEndedOpen] = React.useState(false);
   const [isWinner, setIsWinner] = React.useState<boolean | null>(null);
+  const [isGuessDisabled, setIsGuessDisabled] = React.useState(false);
 
   useEffect(() => {
     if (!player) return;
@@ -73,6 +74,7 @@ export default function WordBattlePage() {
       setTrueWord(data.trueWord);
       setRoundId(data.roundId);
       roundIdRef.current = data.roundId;
+      setIsGuessDisabled(false);
     };
 
     signalRService.on('RoundStarted', handleRoundStarted);
@@ -83,10 +85,20 @@ export default function WordBattlePage() {
   }, [setGeneratedWord, setTrueWord]);
 
   useEffect(() => {
-    const handleAnswerSubmitted = (playerId: string, answer: string, isCorrect: boolean) => {
-      if (playerId === player?.id) {
-        if (isCorrect) toast.success(`Jawaban benar! (${answer})`);
-        else toast.error('Jawaban salah!');
+    const handleAnswerSubmitted = (data: AnswerSubmittedData) => {
+      const { playerId, answer, isCorrect } = data;
+      
+      if (playerId === player?.id && !isCorrect) {
+        toast.error('Jawaban salah!');
+      }
+
+      if (isCorrect) {
+        const isPlayer = playerId === player?.id;
+        const message = isPlayer
+          ? `Jawaban benar! (${answer})`
+          : `Lawan menjawab benar! (${answer})`;
+        toast.success(message);
+        setIsGuessDisabled(true);
       }
     };
 
@@ -101,7 +113,7 @@ export default function WordBattlePage() {
     const handleGameEnded = (data: GameEndedData) => {
       if (!player?.id) return;
       if (data.winnerPlayerIds.length === 0) {
-        setIsWinner(null); // draw
+        setIsWinner(null);
       } else {
         const win = data.winnerPlayerIds.includes(player.id);
         setIsWinner(win);
@@ -161,6 +173,7 @@ export default function WordBattlePage() {
                 wordLength={generatedWord.length}
                 roundId={roundId}
                 playerId={player?.id || ''}
+                disabled={isGuessDisabled}
               />
             </div>
             <GuessHistory history={guessHistory} />

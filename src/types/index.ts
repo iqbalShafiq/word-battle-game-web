@@ -115,6 +115,13 @@ export interface ReceivedMessageData {
   message: string;
 }
 
+// Answer submitted type
+export interface AnswerSubmittedData {
+  playerId: string;
+  answer: string;
+  isCorrect: boolean;
+}
+
 // Game ended type
 export interface GameEndedData {
   winnerPlayerIds: string[];

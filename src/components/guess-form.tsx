@@ -12,13 +12,15 @@ import { getErrorMessage } from '../lib/utils';
  * @param wordLength - The length of the word to guess.
  * @param roundId - The ID of the current round.
  * @param playerId - The ID of the current player.
+ * @param disabled - Boolean to disable the input and button.
  */
 export default function GuessForm({
   onGuess,
   wordLength,
   roundId,
   playerId,
-}: GuessFormProps & { roundId: string; playerId: string }) {
+  disabled = false,
+}: GuessFormProps & { roundId: string; playerId: string; disabled?: boolean }) {
   const [guess, setGuess] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -50,8 +52,9 @@ export default function GuessForm({
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
         maxLength={wordLength}
+        disabled={disabled}
       />
-      <Button type="submit" disabled={!guess || submitting}>
+      <Button type="submit" disabled={!guess || submitting || disabled}>
         Guess
       </Button>
     </form>
