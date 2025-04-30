@@ -6,7 +6,7 @@ import RandomWord from '../components/random-word';
 import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
 import { useGameState } from '../hooks/useGameState';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { RoundStartedData } from '../types';
 import signalRService from '../services/signalr.service';
 import { toast } from 'sonner';
@@ -22,6 +22,8 @@ export default function WordBattlePage() {
   const [isLoading, setIsLoading] = React.useState(false);
   const player = usePlayer();
   const [countdown, setCountdown] = React.useState<number | null>(null);
+  const [roundId, setRoundId] = React.useState<string>('');
+  const roundIdRef = useRef<string>('');
 
   useEffect(() => {
     if (!player) return;
@@ -57,6 +59,8 @@ export default function WordBattlePage() {
       console.log('Round started:', data);
       setGeneratedWord(data.generatedWord);
       setTrueWord(data.trueWord);
+      setRoundId(data.roundId);
+      roundIdRef.current = data.roundId;
     };
 
     signalRService.on('RoundStarted', handleRoundStarted);
@@ -65,6 +69,19 @@ export default function WordBattlePage() {
       signalRService.off('RoundStarted', handleRoundStarted);
     };
   }, [setGeneratedWord, setTrueWord]);
+
+  useEffect(() => {
+    const handleAnswerSubmitted = (playerId: string, answer: string, isCorrect: boolean) => {
+      if (playerId === player?.id) {
+        if (isCorrect) toast.success(`Jawaban benar! (${answer})`);
+        else toast.error('Jawaban salah!');
+      }
+    };
+    signalRService.on('AnswerSubmitted', handleAnswerSubmitted);
+    return () => {
+      signalRService.off('AnswerSubmitted', handleAnswerSubmitted);
+    };
+  }, [player]);
 
   return (
     <>
@@ -76,12 +93,19 @@ export default function WordBattlePage() {
               Word Battle Game
             </h1>
             {countdown !== null && (
-              <div className="text-2xl text-center font-bold text-accent mt-2 mb-1">{countdown}</div>
+              <div className="text-2xl text-center font-bold text-accent mt-2 mb-1">
+                {countdown}
+              </div>
             )}
             <PlayerScoreBoard scores={scores} />
             <div className="text-center mt-6">
               <RandomWord word={generatedWord} />
-              <GuessForm onGuess={handleGuess} wordLength={generatedWord.length} />
+              <GuessForm
+                onGuess={handleGuess}
+                wordLength={generatedWord.length}
+                roundId={roundId}
+                playerId={player?.id || ''}
+              />
             </div>
             <GuessHistory history={guessHistory} />
           </div>
