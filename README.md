@@ -1,54 +1,75 @@
-# React + TypeScript + Vite
+# Word Battle Game Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A real-time multiplayer word guessing game built with React, TypeScript, and Vite. Players compete to guess hidden words, with live scoreboards and chat. The game features matchmaking, a lobby, and interactive gameplay.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication**: Register and login securely.
+- **Lobby**: View your stats and start matchmaking.
+- **Matchmaking & Waiting Room**: Get paired with another player in real-time.
+- **Word Battle**: Compete to guess the word first. See your score and your opponent's.
+- **Chat**: In-game chat to communicate with your opponent.
+- **Game Results**: See who wins, loses, or if it's a draw.
 
-## Expanding the ESLint configuration
+## Screenshots
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Login Page
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+![Login Page](https://ibb.co.com/Cq1W4Pj)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Register Page
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+![Register Page](https://ibb.co.com/MxZCs4F8)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### 3. Lobby
+
+![Lobby](https://ibb.co.com/0Tzq0fq)
+
+### 4. Waiting Room
+
+![Waiting Room](https://ibb.co.com/21dhYk3p)
+
+### 5. Playing
+
+![Playing](https://ibb.co.com/ZRYPJN7K)
+
+### 6. Correct Answer
+
+![Correct Answer](https://ibb.co.com/m5xMYhFc)
+
+### 7. Game Result
+
+![Game Result](https://ibb.co.com/wZ7YksZM)
+
+## Getting Started
+
+1. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+2. **Run the development server:**
+
+   ```bash
+   npm run dev
+   ```
+
+3. **Open your browser:**
+   Visit [http://localhost:5173](http://localhost:5173)
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- SignalR (for real-time communication)
+
+## Folder Structure
+
+- `src/pages/` — Main pages (login, register, lobby, waiting room, game)
+- `src/components/` — UI components (scoreboard, chat, forms, etc.)
+- `src/services/` — API and SignalR services
+- `src/hooks/` — Custom React hooks
+- `src/types/` — TypeScript types
