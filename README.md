@@ -15,31 +15,31 @@ A real-time multiplayer word guessing game built with React, TypeScript, and Vit
 
 ### 1. Login Page
 
-![Login Page](https://ibb.co.com/Cq1W4Pj)
+![Login Page](https://i.ibb.co.com/tSm3nL0/01-Login.jpg)
 
 ### 2. Register Page
 
-![Register Page](https://ibb.co.com/MxZCs4F8)
+![Register Page](https://i.ibb.co.com/W4G26wmD/02-Register.jpg)
 
 ### 3. Lobby
 
-![Lobby](https://ibb.co.com/0Tzq0fq)
+![Lobby](https://i.ibb.co.com/c0sJWNJ/03-Lobby.jpg)
 
 ### 4. Waiting Room
 
-![Waiting Room](https://ibb.co.com/21dhYk3p)
+![Waiting Room](https://i.ibb.co.com/zTZxH4Vt/04-Waiting-Room.jpg)
 
 ### 5. Playing
 
-![Playing](https://ibb.co.com/ZRYPJN7K)
+![Playing](https://i.ibb.co.com/zW7Y5NDb/05-Playing.jpg)
 
 ### 6. Correct Answer
 
-![Correct Answer](https://ibb.co.com/m5xMYhFc)
+![Correct Answer](https://i.ibb.co.com/chm7p2Xr/06-Word-Submitted.jpg)
 
 ### 7. Game Result
 
-![Game Result](https://ibb.co.com/wZ7YksZM)
+![Game Result](https://i.ibb.co.com/Myf9v6yM/07-Game-Result.jpg)
 
 ## Getting Started
 
