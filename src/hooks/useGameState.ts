@@ -3,7 +3,6 @@ import type { PlayerScores } from '../types';
 
 export function useGameState() {
   const [scores, setScores] = useState<PlayerScores>({ 1: 0, 2: 0 });
-  const [turn, setTurn] = useState<1 | 2>(1);
   const [guessHistory, setGuessHistory] = useState<string[]>([]);
   const [generatedWord, setGeneratedWord] = useState<string>('');
   const [trueWord, setTrueWord] = useState<string>('');
@@ -12,17 +11,15 @@ export function useGameState() {
     if (!guess) return;
 
     if (guess.toLowerCase() === trueWord.toLowerCase()) {
-      setGuessHistory((h) => [...h, `Player ${turn} guessed "${guess}" correctly! 🎉`]);
-      setScores((score) => ({ ...score, [turn]: score[turn] + 1 }));
+      setGuessHistory((h) => [...h, `You have guessed "${guess}" correctly! 🎉`]);
     } else {
-      setGuessHistory((h) => [...h, `Player ${turn} guessed "${guess}" - Wrong!`]);
-      setTurn((t) => (t === 1 ? 2 : 1));
+      setGuessHistory((h) => [...h, `You have guessed "${guess}" - Wrong!`]);
     }
   };
 
   return {
     scores,
-    turn,
+    setScores,
     guessHistory,
     handleGuess,
     generatedWord,

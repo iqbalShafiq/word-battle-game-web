@@ -109,6 +109,18 @@ export interface WordCorrectionData {
   trueWord: string;
 }
 
+// Game score type
+export interface GameScoreData {
+  playerScores: PlayerScoreData[];
+}
+
+// Player score type
+export interface PlayerScoreData {
+  playerId: string;
+  playerName: string;
+  totalScore: number;
+}
+
 // Received message type
 export interface ReceivedMessageData {
   playerId: string;

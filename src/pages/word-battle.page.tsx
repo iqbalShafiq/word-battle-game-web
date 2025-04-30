@@ -7,7 +7,7 @@ import RoomChat from '../components/room-chat';
 import { useChatState } from '../hooks/useChatState';
 import { useGameState } from '../hooks/useGameState';
 import { useEffect, useRef } from 'react';
-import { AnswerSubmittedData, RoundStartedData } from '../types';
+import { AnswerSubmittedData, RoundStartedData, GameScoreData } from '../types';
 import signalRService from '../services/signalr.service';
 import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
@@ -25,8 +25,15 @@ import {
 import { GameEndedData } from '../types';
 
 export default function WordBattlePage() {
-  const { scores, guessHistory, handleGuess, generatedWord, setGeneratedWord, setTrueWord } =
-    useGameState();
+  const {
+    scores,
+    guessHistory,
+    handleGuess,
+    generatedWord,
+    setGeneratedWord,
+    setTrueWord,
+    setScores,
+  } = useGameState();
   const { chatHistory, handleSendChat } = useChatState();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -87,7 +94,7 @@ export default function WordBattlePage() {
   useEffect(() => {
     const handleAnswerSubmitted = (data: AnswerSubmittedData) => {
       const { playerId, answer, isCorrect } = data;
-      
+
       if (playerId === player?.id && !isCorrect) {
         toast.error('Jawaban salah!');
       }
@@ -125,6 +132,23 @@ export default function WordBattlePage() {
       signalRService.off('GameEnded', handleGameEnded);
     };
   }, [player]);
+
+  useEffect(() => {
+    const handleGameScores = (data: GameScoreData) => {
+      console.log('Game scores:', data);
+
+      const mapped: Record<1 | 2, number> = { 1: 0, 2: 0 };
+      data.playerScores.forEach((ps, idx) => {
+        const key = (idx + 1) as 1 | 2;
+        mapped[key] = ps.totalScore;
+      });
+      setScores(mapped);
+    };
+    signalRService.on('GameScores', handleGameScores);
+    return () => {
+      signalRService.off('GameScores', handleGameScores);
+    };
+  }, [setScores]);
 
   return (
     <>
