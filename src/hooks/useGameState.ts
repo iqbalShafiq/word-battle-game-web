@@ -10,7 +10,8 @@ export function useGameState() {
 
   const handleGuess = (guess: string) => {
     if (!guess) return;
-    if (guess.toLowerCase() === generatedWord.toLowerCase()) {
+
+    if (guess.toLowerCase() === trueWord.toLowerCase()) {
       setGuessHistory((h) => [...h, `Player ${turn} guessed "${guess}" correctly! 🎉`]);
       setScores((score) => ({ ...score, [turn]: score[turn] + 1 }));
     } else {
