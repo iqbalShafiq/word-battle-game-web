@@ -13,6 +13,16 @@ import { toast } from 'sonner';
 import { usePlayer } from '../hooks/usePlayer';
 import React from 'react';
 import LoadingOverlay from '../components/loading-overlay';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from '../components/ui/alert-dialog';
+import { GameEndedData } from '../types';
 
 export default function WordBattlePage() {
   const { scores, guessHistory, handleGuess, generatedWord, setGeneratedWord, setTrueWord } =
@@ -24,6 +34,8 @@ export default function WordBattlePage() {
   const [countdown, setCountdown] = React.useState<number | null>(null);
   const [roundId, setRoundId] = React.useState<string>('');
   const roundIdRef = useRef<string>('');
+  const [gameEndedOpen, setGameEndedOpen] = React.useState(false);
+  const [isWinner, setIsWinner] = React.useState<boolean | null>(null);
 
   useEffect(() => {
     if (!player) return;
@@ -77,15 +89,59 @@ export default function WordBattlePage() {
         else toast.error('Jawaban salah!');
       }
     };
+
     signalRService.on('AnswerSubmitted', handleAnswerSubmitted);
+
     return () => {
       signalRService.off('AnswerSubmitted', handleAnswerSubmitted);
+    };
+  }, [player]);
+
+  useEffect(() => {
+    const handleGameEnded = (data: GameEndedData) => {
+      if (!player?.id) return;
+      if (data.winnerPlayerIds.length === 0) {
+        setIsWinner(null); // draw
+      } else {
+        const win = data.winnerPlayerIds.includes(player.id);
+        setIsWinner(win);
+      }
+      setGameEndedOpen(true);
+    };
+    signalRService.on('GameEnded', handleGameEnded);
+    return () => {
+      signalRService.off('GameEnded', handleGameEnded);
     };
   }, [player]);
 
   return (
     <>
       {(isLoading || !generatedWord) && <LoadingOverlay />}
+      <AlertDialog open={gameEndedOpen} onOpenChange={setGameEndedOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {isWinner === null
+                ? 'Permainan Berakhir Seri 🤝'
+                : isWinner
+                  ? 'Selamat, Kamu Menang! 🎉'
+                  : 'Kamu Kalah 😢'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {isWinner === null
+                ? 'Permainan berakhir seri. Tidak ada pemenang kali ini.'
+                : isWinner
+                  ? 'Kamu berhasil menjadi pemenang di Word Battle Game!'
+                  : 'Jangan menyerah, coba lagi untuk menang di Word Battle Game!'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => (window.location.href = '/')}>
+              Keluar ke Lobby
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex flex-1 justify-center items-center min-h-screen w-screen bg-primary">
         <div className="flex flex-row bg-none rounded-[22px] shadow-xl m-auto max-h-[90vh] h-[90vh]">
           <div className="bg-secondary rounded-l-[22px] p-10 max-w-[420px] w-full flex flex-col items-stretch max-h-[90vh] h-full overflow-auto">

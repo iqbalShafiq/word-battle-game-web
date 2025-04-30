@@ -114,3 +114,8 @@ export interface ReceivedMessageData {
   playerId: string;
   message: string;
 }
+
+// Game ended type
+export interface GameEndedData {
+  winnerPlayerIds: string[];
+}
