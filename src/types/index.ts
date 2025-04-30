@@ -7,7 +7,8 @@ export type GuessHistoryProps = {
   history: string[];
 };
 
-export type PlayerScores = Record<1 | 2, number>;
+// PlayerScores now holds id, name, and score for each player
+export type PlayerScores = Record<1 | 2, { id: string; name: string; score: number }>;
 
 export type PlayersProps = {
   scores: PlayerScores;

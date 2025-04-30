@@ -135,14 +135,7 @@ export default function WordBattlePage() {
 
   useEffect(() => {
     const handleGameScores = (data: GameScoreData) => {
-      console.log('Game scores:', data);
-
-      const mapped: Record<1 | 2, number> = { 1: 0, 2: 0 };
-      data.playerScores.forEach((ps, idx) => {
-        const key = (idx + 1) as 1 | 2;
-        mapped[key] = ps.totalScore;
-      });
-      setScores(mapped);
+      setScores(data.playerScores);
     };
     signalRService.on('GameScores', handleGameScores);
     return () => {
