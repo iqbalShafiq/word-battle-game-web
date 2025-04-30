@@ -12,18 +12,16 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { toastMessage, clearToast } = useToastStore();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { toastMessage, clearToast } = useToastStore();
   const setToast = useToastStore((s) => s.setToast);
 
   useEffect(() => {
     const email = searchParams.get('email');
-    console.log(email);
     if (!email) return;
 
     const confirmationToken = searchParams.get('confirmationToken');
-    console.log(confirmationToken);
     if (!confirmationToken) return;
 
     if (confirmationToken) {
@@ -64,6 +62,7 @@ export default function LoginPage() {
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
+
     setLoading(true);
     try {
       const res = await loginApi(form.email, form.password);
@@ -76,6 +75,7 @@ export default function LoginPage() {
     } catch (err: unknown) {
       setError(getErrorMessage(err));
     } finally {
+      console.log('Login API called');
       setLoading(false);
     }
   };

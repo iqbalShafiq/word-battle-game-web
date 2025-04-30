@@ -16,11 +16,19 @@ export function isValidPassword(password: string): boolean {
 }
 
 export function getErrorMessage(err: unknown): string {
+  if (typeof err === 'object' && err !== null && 'response' in err) {
+    const response = (err as { response?: unknown }).response;
+    if (response && typeof response === 'object' && 'data' in response) {
+      if (typeof (err as { response: { data: unknown } }).response.data === 'string') {
+        return String((err as { response: { data: unknown } }).response.data);
+      }
+      if (typeof (err as { response: { data: { message: unknown } } }).response.data.message === 'string') {
+        return String((err as { response: { data: { message: unknown } } }).response.data.message)
+      }
+    }
+  }
   if (err instanceof Error) {
     return err.message;
-  }
-  if (typeof err === 'object' && err !== null && 'message' in err) {
-    return String((err as { message: unknown }).message);
   }
   return 'Terjadi error yang tidak diketahui';
 }
